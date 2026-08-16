@@ -3,6 +3,7 @@
 //! punta sense passar per la GUI (plan.md, Testing).
 
 pub mod app;
+pub mod config;
 pub mod encoding;
 pub mod format;
 pub mod rules;

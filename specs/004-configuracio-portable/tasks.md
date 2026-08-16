@@ -28,7 +28,7 @@ Crate binari únic de Rust (plan.md): `src/` i `tests/` a l'arrel del repositori
 
 ## Phase 1: Setup
 
-- [ ] T001 Afegir `serde` amb la característica `derive` a `Cargo.toml` (research.md,
+- [X] T001 Afegir `serde` amb la característica `derive` a `Cargo.toml` (research.md,
       decisió 1)
 
 ---
@@ -37,15 +37,15 @@ Crate binari únic de Rust (plan.md): `src/` i `tests/` a l'arrel del repositori
 
 **⚠️ CRITICAL**: cap user story pot començar fins que aquesta fase estigui completa
 
-- [ ] T002 [P] Afegir `#[derive(Serialize, Deserialize)]` a `RgbColor` en
+- [X] T002 [P] Afegir `#[derive(Serialize, Deserialize)]` a `RgbColor` en
       `src/rules/color.rs` — depèn de T001
-- [ ] T003 [P] Afegir `#[derive(Serialize, Deserialize)]` a `HighlightRule` i implementar
+- [X] T003 [P] Afegir `#[derive(Serialize, Deserialize)]` a `HighlightRule` i implementar
       `RuleSet::from_rules(Vec<HighlightRule>) -> Self` (`version = 0`) en
       `src/rules/mod.rs` — depèn de T001
-- [ ] T004 Crear `src/config.rs` amb `load_from(path)`, `save_to(path, rules)`,
+- [X] T004 Crear `src/config.rs` amb `load_from(path)`, `save_to(path, rules)`,
       `config_path()`, `load()` i `save()` (research.md, decisions 2, 4, 5;
       data-model.md) — depèn de T002, T003
-- [ ] T005 Declarar `pub mod config;` a `src/lib.rs`
+- [X] T005 Declarar `pub mod config;` a `src/lib.rs`
 
 **Checkpoint**: fonaments llestos
 
@@ -61,19 +61,19 @@ comprovar que hi són amb els mateixos valors.
 
 ### Tests for User Story 1 ⚠️
 
-- [ ] T006 [P] [US1] Test: desar un `RuleSet` i tornar-lo a carregar des del mateix path
+- [X] T006 [P] [US1] Test: desar un `RuleSet` i tornar-lo a carregar des del mateix path
       reprodueix les mateixes regles (paraula, color, actiu, filtre) (FR-001, SC-001), en
       `tests/config_integration.rs`
-- [ ] T007 [P] [US1] Test: carregar des d'un path que no existeix retorna un `RuleSet`
+- [X] T007 [P] [US1] Test: carregar des d'un path que no existeix retorna un `RuleSet`
       buit sense error (FR-005), en `tests/config_integration.rs`
 
 ### Implementation for User Story 1
 
-- [ ] T008 [US1] Afegir `last_saved_version: u64` a `App` i un constructor `App::new()`
+- [X] T008 [US1] Afegir `last_saved_version: u64` a `App` i un constructor `App::new()`
       que crida `config::load()` (research.md, decisió 5) en `src/app.rs` — depèn de T004
-- [ ] T009 [US1] Canviar `#[derive(Default)]` d'`App` per un `impl Default` que crida
+- [X] T009 [US1] Canviar `#[derive(Default)]` d'`App` per un `impl Default` que crida
       `Self::new()`, en `src/app.rs` — depèn de T008
-- [ ] T010 [US1] A `App::ui()`, desar quan `rules.version() != last_saved_version`
+- [X] T010 [US1] A `App::ui()`, desar quan `rules.version() != last_saved_version`
       (research.md, decisió 3) en `src/app.rs` — depèn de T008
 
 **Checkpoint**: US1 funcional i comprovable independentment (tancar i reobrir conserva les
@@ -91,13 +91,13 @@ executar-lo des d'allà, i comprovar que les regles hi són.
 
 ### Tests for User Story 2 ⚠️
 
-- [ ] T011 [P] [US2] Test: `config_path()` es resol relatiu al directori pare de
+- [X] T011 [P] [US2] Test: `config_path()` es resol relatiu al directori pare de
       `current_exe()`, mai a un directori fix independent de la ubicació de l'executable
       (FR-008), en `tests/config_integration.rs`
 
 ### Implementation for User Story 2
 
-- [ ] T012 [US2] Verificar manualment (quickstart Escenari P) que copiar l'executable i el
+- [X] T012 [US2] Verificar manualment (quickstart Escenari P) que copiar l'executable i el
       fitxer de configuració a un directori nou preserva les regles, i que copiar només
       l'executable arrenca sense cap regla — depèn de T004, T010
 
@@ -115,16 +115,16 @@ l'aplicació arrenca amb normalitat, sense regles i sense cap diàleg bloquejant
 
 ### Tests for User Story 3 ⚠️
 
-- [ ] T013 [P] [US3] Test: carregar des d'un fitxer amb contingut que no és JSON vàlid
+- [X] T013 [P] [US3] Test: carregar des d'un fitxer amb contingut que no és JSON vàlid
       retorna un `RuleSet` buit sense pànic (FR-006), en `tests/config_integration.rs`
-- [ ] T014 [P] [US3] Test: un array JSON amb una regla vàlida i una amb el camp `color`
+- [X] T014 [P] [US3] Test: un array JSON amb una regla vàlida i una amb el camp `color`
       absent carrega només la vàlida (FR-007), en `tests/config_integration.rs`
-- [ ] T015 [P] [US3] Test: desar en un path dins d'un directori inexistent no fa pànic
+- [X] T015 [P] [US3] Test: desar en un path dins d'un directori inexistent no fa pànic
       (FR-003, l'error s'ignora), en `tests/config_integration.rs`
 
 ### Implementation for User Story 3
 
-- [ ] T016 [US3] Implementar la deserialització element a element amb `filter_map`
+- [X] T016 [US3] Implementar la deserialització element a element amb `filter_map`
       (research.md, decisió 4) en `src/config.rs` — depèn de T004 (ja cobert per T004 si
       s'implementa directament; aquesta tasca queda com a verificació dels tests T013-T015)
 
@@ -134,11 +134,11 @@ l'aplicació arrenca amb normalitat, sense regles i sense cap diàleg bloquejant
 
 ## Phase 6: Polish & Cross-Cutting Concerns
 
-- [ ] T017 [P] Executar `cargo clippy --all-targets` i corregir els avisos
-- [ ] T018 Executar els escenaris O–Q de `quickstart.md` d'extrem a extrem amb el binari
+- [X] T017 [P] Executar `cargo clippy --all-targets` i corregir els avisos
+- [X] T018 Executar els escenaris O–Q de `quickstart.md` d'extrem a extrem amb el binari
       real (sota Xvfb + `xdotool`, com a les Fases 1-3), incloent-hi la còpia real de
       l'executable a un directori nou (Escenari P)
-- [ ] T019 Tornar a comprovar que el binari en mode `release` es manté dins el rang de
+- [X] T019 Tornar a comprovar que el binari en mode `release` es manté dins el rang de
       5–15 MB (constitució) després d'afegir `serde` amb `derive`
 
 ---

@@ -2785,6 +2785,7 @@ dependencies = [
  "notify",
  "quick-xml",
  "regex",
+ "serde",
  "serde_json",
 ]
 

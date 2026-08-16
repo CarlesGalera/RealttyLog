@@ -1,11 +1,14 @@
 pub mod color;
 
+use serde::{Deserialize, Serialize};
+
 pub use color::RgbColor;
 
 /// Correspon a "Regla de ressaltat" de l'spec (FR-001–FR-005, data-model.md).
 /// La prioritat és implícita per la posició dins `RuleSet::rules`, no un
-/// camp d'aquesta struct (research.md, decisió 2).
-#[derive(Debug, Clone)]
+/// camp d'aquesta struct (research.md, decisió 2). `Serialize`/`Deserialize`
+/// (Fase 4) hi són pel mateix motiu que a `RgbColor`.
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct HighlightRule {
     pub keyword: String,
     pub color: RgbColor,
@@ -38,6 +41,14 @@ pub struct RuleSet {
 impl RuleSet {
     pub fn new() -> Self {
         Self::default()
+    }
+
+    /// Reconstrueix un `RuleSet` a partir de regles ja carregades (Fase 4,
+    /// `config::load`). `version` sempre comença a 0: no té cap sentit
+    /// entre execucions diferents (research.md de la Fase 4, decisió 4;
+    /// data-model.md).
+    pub fn from_rules(rules: Vec<HighlightRule>) -> Self {
+        Self { rules, version: 0 }
     }
 
     pub fn rules(&self) -> &[HighlightRule] {
