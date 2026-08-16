@@ -1,9 +1,4 @@
-mod app;
-mod encoding;
-mod search;
-mod tailer;
-
-use app::App;
+use realttylog::app::App;
 
 fn main() -> eframe::Result<()> {
     eframe::run_native(

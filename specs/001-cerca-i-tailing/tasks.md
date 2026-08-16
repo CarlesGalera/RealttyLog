@@ -72,23 +72,23 @@ correcte, sense cap altra funcionalitat.
 
 > Escriure aquests tests primer, comprovar que fallen abans d'implementar
 
-- [ ] T008 [P] [US1] Test d'integració: una cerca en un directori multi-fitxer retorna els
+- [X] T008 [P] [US1] Test d'integració: una cerca en un directori multi-fitxer retorna els
       fitxers correctes, en `tests/search_integration.rs`
-- [ ] T009 [P] [US1] Test d'integració: cancel·lar una cerca en curs conserva els resultats
+- [X] T009 [P] [US1] Test d'integració: cancel·lar una cerca en curs conserva els resultats
       trobats fins aquell moment (FR-005), en `tests/search_integration.rs`
-- [ ] T010 [P] [US1] Test d'integració: els fitxers no llegibles o binaris es descarten
+- [X] T010 [P] [US1] Test d'integració: els fitxers no llegibles o binaris es descarten
       sense aturar la cerca (FR-007), en `tests/search_integration.rs`
 
 ### Implementation for User Story 1
 
-- [ ] T011 [P] [US1] Implementar `LogDirectory` (llistat de fitxers via `ignore`, incl.
+- [X] T011 [P] [US1] Implementar `LogDirectory` (llistat de fitxers via `ignore`, incl.
       subdirectoris, FR-001) en `src/search/directory.rs`
-- [ ] T012 [P] [US1] Implementar el tipus `SearchMatch` (fitxer, offset, fragment de
+- [X] T012 [P] [US1] Implementar el tipus `SearchMatch` (fitxer, offset, fragment de
       context, FR-004) en `src/search/result.rs`
-- [ ] T013 [US1] Implementar `SearchQuery` i el motor de cerca cancel·lable en pool de fils
+- [X] T013 [US1] Implementar `SearchQuery` i el motor de cerca cancel·lable en pool de fils
       amb `grep-searcher`/`grep-matcher` (FR-002, FR-003, FR-005; research.md, decisió 2) en
       `src/search/engine.rs` (depèn de T011, T012)
-- [ ] T014 [US1] Acotar el nombre de resultats mostrats amb indicador de "refina la cerca"
+- [X] T014 [US1] Acotar el nombre de resultats mostrats amb indicador de "refina la cerca"
       (FR-008; research.md, decisió 3) en `src/search/engine.rs`
 - [ ] T015 [US1] Implementar la vista de cerca (camp de text, llistat de directori, llista
       de resultats amb context) en `src/ui/search_view.rs` (depèn de T013)
