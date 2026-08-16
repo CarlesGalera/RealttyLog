@@ -32,11 +32,11 @@ repositori.
 
 **Purpose**: inicialització del projecte Rust
 
-- [ ] T001 Crear l'esquelet del crate binari (`Cargo.toml`, `src/main.rs` mínim) segons
+- [X] T001 Crear l'esquelet del crate binari (`Cargo.toml`, `src/main.rs` mínim) segons
       l'estructura de `plan.md`
-- [ ] T002 [P] Afegir a `Cargo.toml` les dependències `eframe`/`egui`, `notify`, `ignore`,
+- [X] T002 [P] Afegir a `Cargo.toml` les dependències `eframe`/`egui`, `notify`, `ignore`,
       `grep-searcher` i `grep-matcher` (research.md, decisions 1 i 4)
-- [ ] T003 [P] Configurar `rustfmt` i `clippy` com a base de format i lint del projecte
+- [X] T003 [P] Configurar `rustfmt` i `clippy` com a base de format i lint del projecte
 
 ---
 

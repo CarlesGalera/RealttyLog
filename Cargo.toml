@@ -1,0 +1,12 @@
+[package]
+name = "realttylog"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+eframe = "0.35.0"
+grep-matcher = "0.1.9"
+grep-regex = "0.1.14"
+grep-searcher = "0.1.17"
+ignore = "0.4.33"
+notify = "8.2.0"
