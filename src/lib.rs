@@ -5,6 +5,7 @@
 pub mod app;
 pub mod encoding;
 pub mod format;
+pub mod rules;
 pub mod search;
 pub mod tailer;
 pub mod ui;

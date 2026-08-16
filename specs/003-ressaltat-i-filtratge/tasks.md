@@ -28,7 +28,7 @@ Crate binari únic de Rust (plan.md): `src/` i `tests/` a l'arrel del repositori
 
 ## Phase 1: Setup
 
-- [ ] T001 Declarar `pub mod rules;` a `src/lib.rs` i crear l'esquelet buit de
+- [X] T001 Declarar `pub mod rules;` a `src/lib.rs` i crear l'esquelet buit de
       `src/rules/mod.rs` i `src/rules/color.rs` (research.md: cap dependència nova)
 
 ---
@@ -37,11 +37,11 @@ Crate binari únic de Rust (plan.md): `src/` i `tests/` a l'arrel del repositori
 
 **⚠️ CRITICAL**: cap user story pot començar fins que aquesta fase estigui completa
 
-- [ ] T002 [P] Implementar `RgbColor` a `src/rules/color.rs` (data-model.md)
-- [ ] T003 Implementar `HighlightRule` i `RuleSet` (`add`, `remove`, `matching_rule`,
+- [X] T002 [P] Implementar `RgbColor` a `src/rules/color.rs` (data-model.md)
+- [X] T003 Implementar `HighlightRule` i `RuleSet` (`add`, `remove`, `matching_rule`,
       `is_visible`, comptador `version`) a `src/rules/mod.rs` (data-model.md; research.md,
       decisions 1-4) — depèn de T002
-- [ ] T004 Afegir `rules: RuleSet` a `App` (`src/app.rs`) i passar-lo per referència
+- [X] T004 Afegir `rules: RuleSet` a `App` (`src/app.rs`) i passar-lo per referència
       mutable a `LogViewState::ui()` (research.md, decisió 5) — depèn de T003
 
 **Checkpoint**: fonaments llestos
@@ -58,22 +58,22 @@ una regla `ERROR` → vermell i comprovar que només aquelles línies es ressalt
 
 ### Tests for User Story 1 ⚠️
 
-- [ ] T005 [P] [US1] Test: la coincidència és insensible a majúscules i minúscules
+- [X] T005 [P] [US1] Test: la coincidència és insensible a majúscules i minúscules
       (FR-002), en `tests/rules_integration.rs`
-- [ ] T006 [P] [US1] Test: amb dues regles actives que coincideixen amb la mateixa línia,
+- [X] T006 [P] [US1] Test: amb dues regles actives que coincideixen amb la mateixa línia,
       `matching_rule` retorna la creada més recentment (research.md, decisió 2), en
       `tests/rules_integration.rs`
-- [ ] T007 [P] [US1] Test: `RuleSet::add` amb la paraula clau buida o només espais es
+- [X] T007 [P] [US1] Test: `RuleSet::add` amb la paraula clau buida o només espais es
       rebutja (FR-004), en `tests/rules_integration.rs`
 
 ### Implementation for User Story 1
 
-- [ ] T008 [US1] Crear `src/ui/rules_panel.rs` amb un formulari per afegir una regla
+- [X] T008 [US1] Crear `src/ui/rules_panel.rs` amb un formulari per afegir una regla
       (paraula + color) i la llista de regles existents amb el seu color — depèn de T004
-- [ ] T009 [US1] A `src/ui/log_view.rs`, afegir el botó "Regles" que obre/tanca el panell,
+- [X] T009 [US1] A `src/ui/log_view.rs`, afegir el botó "Regles" que obre/tanca el panell,
       i la memorització `rule_match: HashMap<u64, Option<usize>>` amb
       `rule_match_version` (research.md, decisió 4; data-model.md) — depèn de T003
-- [ ] T010 [US1] Aplicar el color de `matching_rule` a cada línia visible en pintar-la, a
+- [X] T010 [US1] Aplicar el color de `matching_rule` a cada línia visible en pintar-la, a
       `src/ui/log_view.rs` (FR-006, FR-007, FR-008) — depèn de T009
 
 **Checkpoint**: US1 funcional i comprovable independentment (ressaltat en carregar i en
@@ -91,22 +91,22 @@ activar-ne el filtre i comprovar que només les línies que la compleixen queden
 
 ### Tests for User Story 2 ⚠️
 
-- [ ] T011 [P] [US2] Test: sense cap regla amb `filter = true`, `is_visible` és sempre
+- [X] T011 [P] [US2] Test: sense cap regla amb `filter = true`, `is_visible` és sempre
       cert (FR-009), en `tests/rules_integration.rs`
-- [ ] T012 [P] [US2] Test: amb dues regles amb `filter = true`, `is_visible` és cert si la
+- [X] T012 [P] [US2] Test: amb dues regles amb `filter = true`, `is_visible` és cert si la
       línia en compleix almenys una — OR, no AND (research.md, decisió 3), en
       `tests/rules_integration.rs`
-- [ ] T013 [P] [US2] Test: desactivar una regla (`enabled = false`) li atura el filtre
+- [X] T013 [P] [US2] Test: desactivar una regla (`enabled = false`) li atura el filtre
       encara que `filter` fos `true` (US3, escenari 3), en `tests/rules_integration.rs`
 
 ### Implementation for User Story 2
 
-- [ ] T014 [US2] Afegir el botó de filtre a cada regla del panell, en
+- [X] T014 [US2] Afegir el botó de filtre a cada regla del panell, en
       `src/ui/rules_panel.rs` — depèn de T008
-- [ ] T015 [US2] Filtrar les línies no visibles en iterar `self.file.viewport.lines` dins
+- [X] T015 [US2] Filtrar les línies no visibles en iterar `self.file.viewport.lines` dins
       `ui()` de `src/ui/log_view.rs` (FR-010, FR-013), sense tocar `ViewportCache` ni
       `LineIndex` — depèn de T010, T014
-- [ ] T016 [US2] Mostrar un avís explícit quan el filtre actiu no compleix cap línia
+- [X] T016 [US2] Mostrar un avís explícit quan el filtre actiu no compleix cap línia
       (FR-012), en `src/ui/log_view.rs` — depèn de T015
 
 **Checkpoint**: US1+US2 funcionals — ressaltar i filtrar sobre les mateixes regles
@@ -124,16 +124,16 @@ llista i del mur).
 
 ### Tests for User Story 3 ⚠️
 
-- [ ] T017 [P] [US3] Test: editar el `keyword` o el `color` d'una regla existent no li
+- [X] T017 [P] [US3] Test: editar el `keyword` o el `color` d'una regla existent no li
       canvia la posició al `Vec` (i per tant la prioritat), en `tests/rules_integration.rs`
-- [ ] T018 [P] [US3] Test: esborrar una regla fa que deixi d'aparèixer a `matching_rule` i
+- [X] T018 [P] [US3] Test: esborrar una regla fa que deixi d'aparèixer a `matching_rule` i
       d'afectar `is_visible` per a qualsevol línia, en `tests/rules_integration.rs`
 
 ### Implementation for User Story 3
 
-- [ ] T019 [US3] Afegir edició (paraula, color), (des)activació i esborrat de regla des de
+- [X] T019 [US3] Afegir edició (paraula, color), (des)activació i esborrat de regla des de
       `src/ui/rules_panel.rs` (FR-003) — depèn de T014
-- [ ] T020 [US3] Validar manualment (quickstart Escenari M) que `App::rules` sobreviu a
+- [X] T020 [US3] Validar manualment (quickstart Escenari M) que `App::rules` sobreviu a
       tancar un fitxer i obrir-ne un altre — depèn de T004, T019
 
 **Checkpoint**: totes les user stories (P1 i P2) funcionals
@@ -142,10 +142,10 @@ llista i del mur).
 
 ## Phase 6: Polish & Cross-Cutting Concerns
 
-- [ ] T021 [P] Executar `cargo clippy --all-targets` i corregir els avisos
-- [ ] T022 Executar els escenaris K–N de `quickstart.md` d'extrem a extrem amb el binari
+- [X] T021 [P] Executar `cargo clippy --all-targets` i corregir els avisos
+- [X] T022 Executar els escenaris K–N de `quickstart.md` d'extrem a extrem amb el binari
       real (sota Xvfb + `xdotool`, com a les Fases 1 i 2)
-- [ ] T023 Tornar a comprovar que el binari en mode `release` es manté dins el rang de
+- [X] T023 Tornar a comprovar que el binari en mode `release` es manté dins el rang de
       5–15 MB (constitució) — no s'ha afegit cap dependència nova, però cal confirmar-ho
 
 ---

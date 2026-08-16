@@ -61,15 +61,16 @@ entitat pròpia de negoci:
 
 | Camp | Descripció |
 |---|---|
-| `rule_match: HashMap<u64, Option<usize>>` | Per `byte_offset` de línia, índex a `rules.rules` de la regla que hi coincideix (si n'hi ha) |
+| `rule_match: HashMap<u64, (Option<usize>, bool)>` | Per `byte_offset` de línia: índex a `rules.rules` de la regla que hi coincideix per ressaltar-la (si n'hi ha), i si la línia és visible sota el filtre actiu |
 | `rule_match_version: u64` | Versió de `RuleSet` amb què es va omplir `rule_match` |
 
 **Comportament**: abans de llegir `rule_match`, si `rule_match_version != rules.version()`,
 es buida `rule_match` sencer i s'actualitza `rule_match_version` (research.md, decisió 4).
-La visibilitat d'una línia (`RuleSet::is_visible`) es deriva directament de
-`rules.is_visible(&line.content)` en pintar, sense memoritzar-la per separat: només cal
-saber-la un cop per frame per a les línies ja carregades, i `is_visible` reutilitza la
-mateixa coincidència que ja s'ha calculat per al ressaltat.
+Els dos valors (regla de ressaltat i visibilitat) es calculen junts per línia i es
+memoritzen en un sol pas: no són el mateix càlcul (`matching_rule` és la de més prioritat;
+`is_visible` mira totes les regles amb filtre actiu, encara que no siguin la de més
+prioritat), però totes dues depenen només del text de la línia i de `rules`, així que
+comparteixen la mateixa invalidació per versió.
 
 ## Relacions
 

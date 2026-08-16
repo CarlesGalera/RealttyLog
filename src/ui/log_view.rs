@@ -3,7 +3,9 @@ use std::collections::HashMap;
 use eframe::egui;
 
 use crate::format::{self, jwt, PayloadKind, StyledLine, TokenKind};
+use crate::rules::{RgbColor, RuleSet};
 use crate::tailer::{FollowState, FollowedFile};
+use crate::ui::rules_panel;
 
 /// Nombre màxim d'entrades que es mantenen a cadascuna de les memòries cau
 /// de la Fase 2 (research.md, decisió 6). En superar-lo, es buiden
@@ -13,12 +15,17 @@ const DETECTION_CACHE_CAP: usize = 4000;
 const EXPANDED_CACHE_CAP: usize = 200;
 
 /// Vista d'un fitxer obert: les línies carregades, l'indicador de directe/
-/// pausat, els payloads detectats i desplegats (Fase 2), i l'acció de
-/// tornar a la llista de resultats (FR-010, FR-011, FR-017–FR-019).
+/// pausat, els payloads detectats i desplegats (Fase 2), el ressaltat i
+/// filtratge per regla (Fase 3), i l'acció de tornar a la llista de
+/// resultats (FR-010, FR-011, FR-017–FR-019).
 pub struct LogViewState {
     pub file: FollowedFile,
     detected: HashMap<u64, Option<PayloadKind>>,
     expanded: HashMap<u64, Vec<StyledLine>>,
+    rule_match: HashMap<u64, (Option<RgbColor>, bool)>,
+    rule_match_version: u64,
+    show_rules_panel: bool,
+    rules_panel: rules_panel::RulesPanelState,
 }
 
 impl LogViewState {
@@ -27,13 +34,17 @@ impl LogViewState {
             file,
             detected: HashMap::new(),
             expanded: HashMap::new(),
+            rule_match: HashMap::new(),
+            rule_match_version: 0,
+            show_rules_panel: false,
+            rules_panel: rules_panel::RulesPanelState::default(),
         }
     }
 
     /// Retorna `true` si l'usuari ha demanat tornar a la llista de
     /// resultats (FR-011): l'estat de la cerca no es toca, és qui crida qui
     /// decideix descartar aquesta vista.
-    pub fn ui(&mut self, ui: &mut egui::Ui) -> bool {
+    pub fn ui(&mut self, ui: &mut egui::Ui, rules: &mut RuleSet) -> bool {
         if self.file.poll() {
             ui.ctx().request_repaint();
         }
@@ -56,9 +67,17 @@ impl LogViewState {
             }
             ui.label(self.file.path.display().to_string());
             self.state_indicator(ui);
+            if ui.button("Regles").clicked() {
+                self.show_rules_panel = !self.show_rules_panel;
+            }
         });
 
+        if self.show_rules_panel {
+            rules_panel::ui(ui, rules, &mut self.rules_panel);
+        }
+
         self.ensure_detection_cached();
+        self.ensure_rule_match_cached(rules);
 
         egui::ScrollArea::vertical()
             .auto_shrink([false, false])
@@ -68,8 +87,21 @@ impl LogViewState {
                     .viewport
                     .lines
                     .iter()
+                    .filter(|l| {
+                        self.rule_match
+                            .get(&l.byte_offset)
+                            .is_none_or(|(_, visible)| *visible)
+                    })
                     .map(|l| l.byte_offset)
                     .collect();
+
+                if offsets.is_empty() && rules.has_active_filter() {
+                    ui.colored_label(
+                        egui::Color32::from_rgb(200, 140, 0),
+                        "⚠ Cap línia compleix el filtre actiu",
+                    );
+                }
+
                 for offset in offsets {
                     self.render_line(ui, offset);
                 }
@@ -97,8 +129,33 @@ impl LogViewState {
         }
     }
 
+    /// Calcula, per a cada línia carregada, quina regla la ressalta i si és
+    /// visible sota el filtre actiu, i ho memoritza (research.md, decisió
+    /// 4). Si les regles han canviat des de l'últim càlcul, es buida tot
+    /// abans de tornar a omplir-lo.
+    fn ensure_rule_match_cached(&mut self, rules: &RuleSet) {
+        if self.rule_match_version != rules.version() {
+            self.rule_match.clear();
+            self.rule_match_version = rules.version();
+        }
+        for line in &self.file.viewport.lines {
+            self.rule_match.entry(line.byte_offset).or_insert_with(|| {
+                let highlight = rules
+                    .matching_rule(&line.content)
+                    .map(|(_, rule)| rule.color);
+                let visible = rules.is_visible(&line.content);
+                (highlight, visible)
+            });
+        }
+    }
+
     fn render_line(&mut self, ui: &mut egui::Ui, offset: u64) {
         let kind = self.detected.get(&offset).copied().flatten();
+        let highlight_color = self
+            .rule_match
+            .get(&offset)
+            .and_then(|(color, _)| *color)
+            .map(to_color32);
 
         ui.horizontal(|ui| {
             if let Some(kind) = kind {
@@ -113,7 +170,14 @@ impl LogViewState {
                 .iter()
                 .find(|l| l.byte_offset == offset)
             {
-                ui.label(&line.content);
+                match highlight_color {
+                    Some(color) => {
+                        ui.colored_label(color, &line.content);
+                    }
+                    None => {
+                        ui.label(&line.content);
+                    }
+                }
             }
         });
 
@@ -122,7 +186,7 @@ impl LogViewState {
                 .inner_margin(egui::Margin::symmetric(16, 4))
                 .show(ui, |ui| {
                     for line in styled {
-                        render_styled_line(ui, line);
+                        render_styled_line(ui, line, highlight_color);
                     }
                 });
         }
@@ -234,11 +298,15 @@ fn jwt_styled_lines(decoded: &jwt::DecodedJwt) -> Vec<StyledLine> {
     out
 }
 
-fn render_styled_line(ui: &mut egui::Ui, line: &StyledLine) {
+/// `highlight` sobreescriu el color de tots els tokens quan la línia
+/// condensada corresponent compleix una regla de ressaltat activa (Fase 3,
+/// quickstart Escenari N): el text desplegat s'ha de veure ressaltat igual
+/// que la línia condensada, en lloc del color per tipus de dada.
+fn render_styled_line(ui: &mut egui::Ui, line: &StyledLine, highlight: Option<egui::Color32>) {
     ui.horizontal_wrapped(|ui| {
         ui.spacing_mut().item_spacing.x = 0.0;
         for (text, kind) in &line.segments {
-            ui.colored_label(token_color(*kind), text);
+            ui.colored_label(highlight.unwrap_or_else(|| token_color(*kind)), text);
         }
     });
 }
@@ -256,4 +324,8 @@ fn token_color(kind: TokenKind) -> egui::Color32 {
         TokenKind::Comment => egui::Color32::from_rgb(120, 120, 120),
         TokenKind::PlainText => egui::Color32::from_rgb(220, 220, 220),
     }
+}
+
+fn to_color32(color: RgbColor) -> egui::Color32 {
+    egui::Color32::from_rgb(color.r, color.g, color.b)
 }
