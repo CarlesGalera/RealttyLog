@@ -1,4 +1,4 @@
-# Specification Quality Checklist: Tailing bàsic
+# Specification Quality Checklist: Cerca i tailing
 
 **Purpose**: Validate specification completeness and quality before proceeding to planning
 **Created**: 2026-08-15
