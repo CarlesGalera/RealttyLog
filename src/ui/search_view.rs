@@ -22,6 +22,7 @@ pub struct SearchViewState {
     directory_path_input: String,
     directory: Option<LogDirectory>,
     directory_error: Option<String>,
+    open_error: Option<String>,
     query_text: String,
     status: SearchStatus,
     matches: Vec<SearchMatch>,
@@ -35,6 +36,7 @@ impl Default for SearchViewState {
             directory_path_input: String::new(),
             directory: None,
             directory_error: None,
+            open_error: None,
             query_text: String::new(),
             status: SearchStatus::Idle,
             matches: Vec::new(),
@@ -45,7 +47,9 @@ impl Default for SearchViewState {
 }
 
 impl SearchViewState {
-    pub fn ui(&mut self, ui: &mut egui::Ui) {
+    /// Retorna el resultat que l'usuari ha clicat aquest frame, si n'hi ha
+    /// (FR-009): qui crida decideix què fer-ne (obrir-lo com a `FollowedFile`).
+    pub fn ui(&mut self, ui: &mut egui::Ui) -> Option<SearchMatch> {
         self.drain_events(ui.ctx());
 
         ui.horizontal(|ui| {
@@ -59,9 +63,12 @@ impl SearchViewState {
         if let Some(error) = &self.directory_error {
             ui.colored_label(egui::Color32::RED, error);
         }
+        if let Some(error) = &self.open_error {
+            ui.colored_label(egui::Color32::RED, error);
+        }
 
         let Some(directory) = &self.directory else {
-            return;
+            return None;
         };
 
         ui.label(format!(
@@ -85,11 +92,22 @@ impl SearchViewState {
 
         self.status_line(ui);
 
+        let mut clicked = None;
         egui::ScrollArea::vertical().show(ui, |ui| {
             for m in &self.matches {
-                ui.label(format!("{}: {}", m.file_path.display(), m.line_context));
+                let text = format!("{}: {}", m.file_path.display(), m.line_context);
+                if ui.selectable_label(false, text).clicked() {
+                    clicked = Some(m.clone());
+                }
             }
         });
+        clicked
+    }
+
+    /// Es crida des de fora quan obrir el fitxer d'un resultat ha fallat
+    /// (per exemple, s'ha esborrat entre la cerca i el clic).
+    pub fn set_open_error(&mut self, message: String) {
+        self.open_error = Some(message);
     }
 
     fn status_line(&self, ui: &mut egui::Ui) {

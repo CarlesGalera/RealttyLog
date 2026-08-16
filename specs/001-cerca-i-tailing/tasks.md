@@ -90,9 +90,9 @@ correcte, sense cap altra funcionalitat.
       `src/search/engine.rs` (depèn de T011, T012)
 - [X] T014 [US1] Acotar el nombre de resultats mostrats amb indicador de "refina la cerca"
       (FR-008; research.md, decisió 3) en `src/search/engine.rs`
-- [ ] T015 [US1] Implementar la vista de cerca (camp de text, llistat de directori, llista
+- [X] T015 [US1] Implementar la vista de cerca (camp de text, llistat de directori, llista
       de resultats amb context) en `src/ui/search_view.rs` (depèn de T013)
-- [ ] T016 [US1] Connectar la vista de cerca a l'estat de l'aplicació (depèn de T005, T015)
+- [X] T016 [US1] Connectar la vista de cerca a l'estat de l'aplicació (depèn de T005, T015)
 
 **Checkpoint**: US1 funcional i comprovable independentment (cercar i veure resultats,
 encara sense poder-hi saltar)
@@ -109,24 +109,24 @@ s'obre el fitxer amb la línia trobada visible, sense desplaçar-se manualment.
 
 ### Tests for User Story 2 ⚠️
 
-- [ ] T017 [P] [US2] Test d'integració: obrir un fitxer en un offset concret mostra la línia
+- [X] T017 [P] [US2] Test d'integració: obrir un fitxer en un offset concret mostra la línia
       i el context correctes, en `tests/tailer_integration.rs`
 
 ### Implementation for User Story 2
 
-- [ ] T018 [P] [US2] Implementar el nucli de `FollowedFile` (camí, estat, read_offset) en
+- [X] T018 [P] [US2] Implementar el nucli de `FollowedFile` (camí, estat, read_offset) en
       `src/tailer/mod.rs`
-- [ ] T019 [P] [US2] Implementar `LineIndex` (checkpoints dispersos d'offset, research.md
+- [X] T019 [P] [US2] Implementar `LineIndex` (checkpoints dispersos d'offset, research.md
       decisió 6) en `src/tailer/index.rs`
-- [ ] T020 [US2] Implementar la lectura per offset amb decodificació lossy (FR-022) en
+- [X] T020 [US2] Implementar la lectura per offset amb decodificació lossy (FR-022) en
       `src/tailer/reader.rs` (depèn de T006, T018, T019)
-- [ ] T021 [US2] Implementar `ViewportCache` (finestra acotada, recàrrega des de
+- [X] T021 [US2] Implementar `ViewportCache` (finestra acotada, recàrrega des de
       `LineIndex` en desplaçar-se'n fora) en `src/tailer/viewport.rs` (depèn de T019, T020)
-- [ ] T022 [US2] Implementar la vista de fitxer (llista de línies desplaçable, context al
+- [X] T022 [US2] Implementar la vista de fitxer (llista de línies desplaçable, context al
       voltant d'un salt, FR-010) en `src/ui/log_view.rs` (depèn de T021)
-- [ ] T023 [US2] Connectar el clic d'un `SearchMatch` a obrir `FollowedFile` a
+- [X] T023 [US2] Connectar el clic d'un `SearchMatch` a obrir `FollowedFile` a
       `byte_offset` (FR-009) (depèn de T012, T018, T022)
-- [ ] T024 [US2] Implementar "tornar a la llista de resultats" sense repetir la cerca
+- [X] T024 [US2] Implementar "tornar a la llista de resultats" sense repetir la cerca
       (FR-011) (depèn de T016, T022)
 
 **Checkpoint**: US1+US2 funcionals: cercar, saltar-hi, veure context
