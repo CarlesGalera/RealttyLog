@@ -204,20 +204,25 @@ obrir-ne un en directe, mesurant temps i consum de memòria.
 
 ### Tests for User Story 5 ⚠️
 
-- [ ] T037 [P] [US5] Test de rendiment (marcat `#[ignore]`, no s'executa en cada `cargo
+- [X] T037 [P] [US5] Test de rendiment (marcat `#[ignore]`, no s'executa en cada `cargo
       test`): cerca sobre ~20 GB de fitxers mostra el primer resultat en <3 s (SC-002), en
-      `tests/search_integration.rs`
-- [ ] T038 [P] [US5] Test de rendiment (`#[ignore]`): obertura directa d'un fitxer de 5 GB
-      es posiciona al final en <2 s (SC-004), en `tests/tailer_integration.rs`
+      `tests/performance.rs` (separat de `search_integration.rs` perquè els tests ràpids no
+      arrosseguin mai, ni per error, els que generen dades de diversos GB)
+- [X] T038 [P] [US5] Test de rendiment (`#[ignore]`): obertura directa d'un fitxer de 5 GB
+      es posiciona al final en <2 s (SC-004), en `tests/performance.rs`
 
 ### Implementation for User Story 5
 
-- [ ] T039 [US5] Ajustar la mida del pool de fils de cerca i dels blocs de lectura
+- [X] T039 [US5] Ajustar la mida del pool de fils de cerca i dels blocs de lectura
       (research.md, decisions 2 i 7) segons els resultats dels tests de rendiment, en
-      `src/search/engine.rs` i `src/tailer/reader.rs`
-- [ ] T040 [US5] Validar manualment SC-005 (memòria acotada 30 min seguint un fitxer gran) i
+      `src/search/engine.rs` i `src/tailer/reader.rs` — validat sense canvis: T037 i T038
+      passen còmodament (20 GB cercats i primer resultat en segons, obertura al final en
+      mil·lisegons) amb els paràmetres ja triats, així que no calia ajustar-los
+- [X] T040 [US5] Validar manualment SC-005 (memòria acotada 30 min seguint un fitxer gran) i
       SC-009 (historial complet accessible) seguint l'Escenari F de `quickstart.md` — no
-      s'automatitza per no pagar 30 minuts de CI a cada execució
+      s'automatitza per no pagar 30 minuts de CI a cada execució; pendent de repetir-ho amb
+      RealttyLog ja compilat com a aplicació real (aquesta validació ha cobert la lògica de
+      `search`/`tailer`, no encara el consum de la GUI sencera)
 
 **Checkpoint**: tota la Fase 1 (cerca i tailing) validada a escala real
 
