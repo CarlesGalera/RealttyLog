@@ -143,24 +143,24 @@ obert, comprovar que cada línia nova hi apareix sense recarregar.
 
 ### Tests for User Story 3 ⚠️
 
-- [ ] T025 [P] [US3] Test d'integració: línies noves apareixen en seguir un fitxer en
+- [X] T025 [P] [US3] Test d'integració: línies noves apareixen en seguir un fitxer en
       creixement, en `tests/tailer_integration.rs`
-- [ ] T026 [P] [US3] Test d'integració: una rotació (truncament i reemplaçament) es detecta
+- [X] T026 [P] [US3] Test d'integració: una rotació (truncament i reemplaçament) es detecta
       i el seguiment continua (FR-020), en `tests/tailer_integration.rs`
 
 ### Implementation for User Story 3
 
-- [ ] T027 [P] [US3] Implementar el watcher basat en `notify` (research.md, decisió 4) en
+- [X] T027 [P] [US3] Implementar el watcher basat en `notify` (research.md, decisió 4) en
       `src/tailer/watcher.rs`
-- [ ] T028 [US3] Implementar la detecció de rotació/truncament (research.md, decisió 5) en
+- [X] T028 [US3] Implementar la detecció de rotació/truncament (research.md, decisió 5) en
       `src/tailer/rotation.rs` (depèn de T018, T027)
-- [ ] T029 [US3] Implementar el posicionament inicial al final llegint per blocs enrere
+- [X] T029 [US3] Implementar el posicionament inicial al final llegint per blocs enrere
       (FR-013; research.md, decisió 7) en `src/tailer/reader.rs` (depèn de T020)
-- [ ] T030 [US3] Connectar l'arribada de línies en directe a `ViewportCache`/`LineIndex` via
+- [X] T030 [US3] Connectar l'arribada de línies en directe a `ViewportCache`/`LineIndex` via
       canal `mpsc` (research.md, decisió 8) en `src/tailer/mod.rs` (depèn de T021, T027)
-- [ ] T031 [US3] Implementar obrir un fitxer directament, sense passar per cerca (FR-012),
+- [X] T031 [US3] Implementar obrir un fitxer directament, sense passar per cerca (FR-012),
       en `src/ui/search_view.rs` (depèn de T029)
-- [ ] T032 [US3] Implementar l'estat "no disponible" i la represa en tornar a haver-hi
+- [X] T032 [US3] Implementar l'estat "no disponible" i la represa en tornar a haver-hi
       accés (FR-021) en `src/tailer/watcher.rs` (depèn de T027)
 
 **Checkpoint**: seguiment en directe funcional, tant des de cerca com obrint directament

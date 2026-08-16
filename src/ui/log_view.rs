@@ -2,8 +2,8 @@ use eframe::egui;
 
 use crate::tailer::FollowedFile;
 
-/// Vista d'un fitxer obert: les línies carregades i l'acció de tornar a la
-/// llista de resultats (FR-010, FR-011).
+/// Vista d'un fitxer obert: les línies carregades, en directe o no, i
+/// l'acció de tornar a la llista de resultats (FR-010, FR-011).
 pub struct LogViewState {
     pub file: FollowedFile,
 }
@@ -17,6 +17,10 @@ impl LogViewState {
     /// resultats (FR-011): l'estat de la cerca no es toca, és qui crida qui
     /// decideix descartar aquesta vista.
     pub fn ui(&mut self, ui: &mut egui::Ui) -> bool {
+        if self.file.poll() {
+            ui.ctx().request_repaint();
+        }
+
         let mut back_requested = false;
         ui.horizontal(|ui| {
             if ui.button("< Resultats").clicked() {

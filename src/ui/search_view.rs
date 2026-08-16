@@ -1,3 +1,4 @@
+use std::path::PathBuf;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::mpsc::{Receiver, TryRecvError};
 use std::sync::Arc;
@@ -16,6 +17,13 @@ enum SearchStatus {
     Cancelled,
 }
 
+/// El que l'usuari ha demanat obrir aquest frame: un resultat de cerca
+/// (FR-009) o un fitxer directament (FR-012).
+pub enum SearchViewAction {
+    OpenMatch(SearchMatch),
+    OpenDirect(PathBuf),
+}
+
 /// Estat de la vista de cerca: el directori obert (FR-001) i la cerca en
 /// curs o acabada (FR-002–FR-008).
 pub struct SearchViewState {
@@ -28,6 +36,7 @@ pub struct SearchViewState {
     matches: Vec<SearchMatch>,
     receiver: Option<Receiver<SearchEvent>>,
     cancel: Option<Arc<AtomicBool>>,
+    direct_file_input: String,
 }
 
 impl Default for SearchViewState {
@@ -42,16 +51,34 @@ impl Default for SearchViewState {
             matches: Vec::new(),
             receiver: None,
             cancel: None,
+            direct_file_input: String::new(),
         }
     }
 }
 
 impl SearchViewState {
-    /// Retorna el resultat que l'usuari ha clicat aquest frame, si n'hi ha
-    /// (FR-009): qui crida decideix què fer-ne (obrir-lo com a `FollowedFile`).
-    pub fn ui(&mut self, ui: &mut egui::Ui) -> Option<SearchMatch> {
+    /// Retorna l'acció que l'usuari ha demanat aquest frame, si n'hi ha:
+    /// qui crida decideix què fer-ne (obrir-la com a `FollowedFile`).
+    pub fn ui(&mut self, ui: &mut egui::Ui) -> Option<SearchViewAction> {
         self.drain_events(ui.ctx());
 
+        ui.horizontal(|ui| {
+            ui.label("Obrir un fitxer directament:");
+            ui.text_edit_singleline(&mut self.direct_file_input);
+            let open_direct = ui.button("Segueix-lo").clicked();
+            if open_direct && !self.direct_file_input.trim().is_empty() {
+                return Some(SearchViewAction::OpenDirect(PathBuf::from(
+                    self.direct_file_input.trim(),
+                )));
+            }
+            None
+        })
+        .inner
+        .or_else(|| self.search_ui(ui))
+    }
+
+    fn search_ui(&mut self, ui: &mut egui::Ui) -> Option<SearchViewAction> {
+        ui.separator();
         ui.horizontal(|ui| {
             ui.label("Directori:");
             ui.text_edit_singleline(&mut self.directory_path_input);
@@ -101,7 +128,7 @@ impl SearchViewState {
                 }
             }
         });
-        clicked
+        clicked.map(SearchViewAction::OpenMatch)
     }
 
     /// Es crida des de fora quan obrir el fitxer d'un resultat ha fallat

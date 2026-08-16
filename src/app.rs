@@ -2,7 +2,7 @@ use eframe::egui;
 
 use crate::tailer::{FollowedFile, OpenAt};
 use crate::ui::log_view::LogViewState;
-use crate::ui::search_view::SearchViewState;
+use crate::ui::search_view::{SearchViewAction, SearchViewState};
 
 /// Estat de l'aplicació: la cerca es manté sempre viva perquè "tornar als
 /// resultats" (FR-011) no impliqui repetir-la; `open_file` només és `Some`
@@ -23,18 +23,18 @@ impl eframe::App for App {
                 return;
             }
 
-            let Some(clicked) = self.search.ui(ui) else {
+            let Some(action) = self.search.ui(ui) else {
                 return;
             };
-            match FollowedFile::open(
-                clicked.file_path.clone(),
-                OpenAt::Offset(clicked.byte_offset),
-            ) {
+            let (path, at) = match action {
+                SearchViewAction::OpenMatch(m) => (m.file_path, OpenAt::Offset(m.byte_offset)),
+                SearchViewAction::OpenDirect(path) => (path, OpenAt::End),
+            };
+            match FollowedFile::open(path.clone(), at) {
                 Ok(file) => self.open_file = Some(LogViewState::new(file)),
-                Err(err) => self.search.set_open_error(format!(
-                    "No s'ha pogut obrir {}: {err}",
-                    clicked.file_path.display()
-                )),
+                Err(err) => self
+                    .search
+                    .set_open_error(format!("No s'ha pogut obrir {}: {err}", path.display())),
             }
         });
     }
