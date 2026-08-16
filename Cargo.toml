@@ -11,3 +11,13 @@ grep-searcher = "0.1.17"
 ignore = "0.4.33"
 notify = "8.2.0"
 regex = "1.13.1"
+
+# Constitució, Restriccions tècniques: binari objectiu de 5-15 MB per
+# plataforma. El perfil `dev` es queda amb els valors per defecte per no
+# alentir la iteració.
+[profile.release]
+strip = true
+lto = true
+codegen-units = 1
+opt-level = "z"
+panic = "abort"

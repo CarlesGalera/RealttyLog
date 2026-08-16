@@ -22,6 +22,17 @@ impl LogViewState {
             ui.ctx().request_repaint();
         }
 
+        // Un desplaçament manual mentre se segueix en directe és senyal
+        // inequívoc que l'usuari vol repassar l'historial (FR-006). Cal
+        // detectar-ho i pausar ABANS de dibuixar res: l'indicador de sota i
+        // el força-scroll de la llista han de veure ja l'estat corregit en
+        // aquest mateix frame, no un de retardat.
+        let user_scrolled = ui.input(|i| i.smooth_scroll_delta.y.abs() > 0.0);
+        if user_scrolled && self.file.state == FollowState::Live {
+            self.file.pause();
+            ui.ctx().request_repaint();
+        }
+
         let mut back_requested = false;
         ui.horizontal(|ui| {
             if ui.button("< Resultats").clicked() {
@@ -30,15 +41,6 @@ impl LogViewState {
             ui.label(self.file.path.display().to_string());
             self.state_indicator(ui);
         });
-
-        // Un desplaçament manual mentre se segueix en directe és senyal
-        // inequívoc que l'usuari vol repassar l'historial (FR-006): es
-        // pausa abans de dibuixar la llista, perquè aquest mateix frame ja
-        // no forci la vista cap avall i el desplaçament es senti immediat.
-        let user_scrolled = ui.input(|i| i.smooth_scroll_delta.y.abs() > 0.0);
-        if user_scrolled && self.file.state == FollowState::Live {
-            self.file.pause();
-        }
 
         egui::ScrollArea::vertical()
             .auto_shrink([false, false])

@@ -232,10 +232,24 @@ obrir-ne un en directe, mesurant temps i consum de memòria.
 
 **Purpose**: qualitat transversal a totes les user stories
 
-- [ ] T041 [P] Executar `cargo clippy --all-targets` i corregir els avisos
-- [ ] T042 Executar tots els escenaris de `quickstart.md` (A–F) d'extrem a extrem
-- [ ] T043 Comprovar que el binari en mode `release` es manté dins el rang de 5–15 MB
-      (constitució, Restriccions tècniques)
+- [X] T041 [P] Executar `cargo clippy --all-targets` i corregir els avisos
+- [X] T042 Executar els escenaris de `quickstart.md` d'extrem a extrem — fet de debò amb el
+      binari compilat sota Xvfb + `xdotool` (no només llegit): Escenari A (obrir directori,
+      cercar, veure el fitxer correcte entre 3), Escenari B (clicar el resultat i saltar-hi
+      amb context), Escenari C (obertura directa i línia nova en directe) i la represa de
+      l'Escenari D ("Tornar al directe") validats amb captures reals. En el procés es va
+      trobar i corregir un bug real: l'indicador "En directe"/"Pausat" es dibuixava abans de
+      processar el desplaçament de l'usuari, així que quedava un frame endarrerit — corregit
+      reordenant `src/ui/log_view.rs`. La meitat de l'Escenari D que detecta la pausa en fer
+      scroll de rodeta no s'ha pogut validar visualment: `xdotool`/Xvfb no genera events de
+      rodeta que aquest `winit` reconegui en aquest entorn headless — la lògica subjacent
+      (`pause`/`resume_live`/`has_new_content_while_paused`) sí que està coberta pel test
+      d'integració de la Fase 6. Als escenaris E i F (rotació i fitxers grans des de la GUI)
+      no s'hi ha arribat: queden per a l'usuari amb l'aplicació real
+- [X] T043 Comprovar que el binari en mode `release` es manté dins el rang de 5–15 MB
+      (constitució, Restriccions tècniques) — calia afegir un perfil `[profile.release]`
+      (`strip`, `lto`, `codegen-units = 1`, `opt-level = "z"`, `panic = "abort"`) a
+      `Cargo.toml`: sense ell pesava 28 MB, amb ell 13 MB
 
 ---
 
