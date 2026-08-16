@@ -27,7 +27,7 @@ Crate binari únic de Rust (plan.md): `src/` i `tests/` a l'arrel del repositori
 
 ## Phase 1: Setup
 
-- [ ] T001 Afegir a `Cargo.toml` les dependències `serde_json`, `quick-xml` i `base64`
+- [X] T001 Afegir a `Cargo.toml` les dependències `serde_json`, `quick-xml` i `base64`
       (research.md, decisions 1, 2 i 4)
 
 ---
@@ -36,9 +36,9 @@ Crate binari únic de Rust (plan.md): `src/` i `tests/` a l'arrel del repositori
 
 **⚠️ CRITICAL**: cap user story pot començar fins que aquesta fase estigui completa
 
-- [ ] T002 [P] Crear `src/format/styled.rs` amb `TokenKind` i `StyledLine` (research.md,
+- [X] T002 [P] Crear `src/format/styled.rs` amb `TokenKind` i `StyledLine` (research.md,
       decisió 5; data-model.md)
-- [ ] T003 [P] Crear `src/format/mod.rs` amb `PayloadKind` i `DetectedPayload`
+- [X] T003 [P] Crear `src/format/mod.rs` amb `PayloadKind` i `DetectedPayload`
       (data-model.md) i declarar els submòduls
 
 **Checkpoint**: fonaments llestos
@@ -55,28 +55,28 @@ XML complet, obrir-lo i comprovar que només les segones porten l'indicador.
 
 ### Tests for User Story 1 ⚠️
 
-- [ ] T004 [P] [US1] Test: un JSON vàlid es detecta i una clau solta invàlida no (FR-001,
+- [X] T004 [P] [US1] Test: un JSON vàlid es detecta i una clau solta invàlida no (FR-001,
       FR-004), en `tests/format_integration.rs`
-- [ ] T005 [P] [US1] Test: un XML ben format es detecta com a `Xml` (FR-001), en
+- [X] T005 [P] [US1] Test: un XML ben format es detecta com a `Xml` (FR-001), en
       `tests/format_integration.rs`
-- [ ] T006 [P] [US1] Test: un fragment HTML permissiu (`<br>` sense tancar) es detecta com
+- [X] T006 [P] [US1] Test: un fragment HTML permissiu (`<br>` sense tancar) es detecta com
       a `Html` (Edge Case), en `tests/format_integration.rs`
-- [ ] T007 [P] [US1] Test: la forma d'un JWT es detecta com a `Jwt` (FR-011), en
+- [X] T007 [P] [US1] Test: la forma d'un JWT es detecta com a `Jwt` (FR-011), en
       `tests/format_integration.rs`
-- [ ] T008 [P] [US1] Test: una línia de text pla no es detecta (FR-004), en
+- [X] T008 [P] [US1] Test: una línia de text pla no es detecta (FR-004), en
       `tests/format_integration.rs`
 
 ### Implementation for User Story 1
 
-- [ ] T009 [P] [US1] Implementar la detecció JSON (validesa via `serde_json::from_str`) en
+- [X] T009 [P] [US1] Implementar la detecció JSON (validesa via `serde_json::from_str`) en
       `src/format/json.rs` (depèn de T003)
-- [ ] T010 [P] [US1] Implementar la detecció XML estricta i HTML permissiva amb
+- [X] T010 [P] [US1] Implementar la detecció XML estricta i HTML permissiva amb
       `quick-xml` (research.md, decisions 2-3) en `src/format/xml.rs` (depèn de T003)
-- [ ] T011 [P] [US1] Implementar la detecció de la forma d'un JWT (tres segments
+- [X] T011 [P] [US1] Implementar la detecció de la forma d'un JWT (tres segments
       base64url, sense descodificar encara) en `src/format/jwt.rs` (depèn de T003)
-- [ ] T012 [US1] Implementar `detect::detect()`, que prova JSON, XML, HTML i JWT en ordre
+- [X] T012 [US1] Implementar `detect::detect()`, que prova JSON, XML, HTML i JWT en ordre
       (FR-005) en `src/format/detect.rs` (depèn de T009-T011)
-- [ ] T013 [US1] Afegir la memorització `detected: HashMap<u64, Option<PayloadKind>>` i
+- [X] T013 [US1] Afegir la memorització `detected: HashMap<u64, Option<PayloadKind>>` i
       l'indicador visual a `src/ui/log_view.rs` (depèn de T012; research.md, decisió 6)
 
 **Checkpoint**: US1 funcional i comprovable independentment (indicador visible, mur intacte)
@@ -93,18 +93,18 @@ comprovar que es mostra indentat sense perdre cap dada.
 
 ### Tests for User Story 2 ⚠️
 
-- [ ] T014 [P] [US2] Test: un JSON es formata a `Vec<StyledLine>` conservant totes les
+- [X] T014 [P] [US2] Test: un JSON es formata a `Vec<StyledLine>` conservant totes les
       dades de l'original (FR-010), en `tests/format_integration.rs`
-- [ ] T015 [P] [US2] Test: un XML/HTML es formata indentat per nivell d'imbricació
+- [X] T015 [P] [US2] Test: un XML/HTML es formata indentat per nivell d'imbricació
       (Acceptance Scenario 2), en `tests/format_integration.rs`
 
 ### Implementation for User Story 2
 
-- [ ] T016 [US2] Implementar `Value` → `Vec<StyledLine>` amb `TokenKind` per tipus de dada
+- [X] T016 [US2] Implementar `Value` → `Vec<StyledLine>` amb `TokenKind` per tipus de dada
       en `src/format/json.rs` (depèn de T009)
-- [ ] T017 [US2] Implementar tokens XML/HTML → `Vec<StyledLine>` indentats per nivell en
+- [X] T017 [US2] Implementar tokens XML/HTML → `Vec<StyledLine>` indentats per nivell en
       `src/format/xml.rs` (depèn de T010)
-- [ ] T018 [US2] Afegir la memorització `expanded: HashMap<u64, Vec<StyledLine>>`, l'acció
+- [X] T018 [US2] Afegir la memorització `expanded: HashMap<u64, Vec<StyledLine>>`, l'acció
       de desplegar/condensar independent per línia, i el mapeig `TokenKind` → `Color32` en
       `src/ui/log_view.rs` (depèn de T016, T017, T013)
 
@@ -122,19 +122,19 @@ comprovar que capçalera i payload es mostren amb els valors correctes.
 
 ### Tests for User Story 3 ⚠️
 
-- [ ] T019 [P] [US3] Test: un JWT conegut decodifica capçalera i payload als valors
+- [X] T019 [P] [US3] Test: un JWT conegut decodifica capçalera i payload als valors
       exactes (SC-005), en `tests/format_integration.rs`
-- [ ] T020 [P] [US3] Test: un JWT amb el payload corromput mostra un avís en lloc de
+- [X] T020 [P] [US3] Test: un JWT amb el payload corromput mostra un avís en lloc de
       trencar-se (Acceptance Scenario 3), en `tests/format_integration.rs`
 
 ### Implementation for User Story 3
 
-- [ ] T021 [US3] Implementar la descodificació base64url dels dos primers segments i el
+- [X] T021 [US3] Implementar la descodificació base64url dels dos primers segments i el
       parsing com a JSON, reutilitzant `format/json.rs` (research.md, decisió 4) en
       `src/format/jwt.rs` (depèn de T011, T016)
-- [ ] T022 [US3] Mostrar la signatura tal com és, marcada com a no desxifrable (FR-012) en
+- [X] T022 [US3] Mostrar la signatura tal com és, marcada com a no desxifrable (FR-012) en
       `src/format/jwt.rs`
-- [ ] T023 [US3] Connectar el tipus `Jwt` al desplegament (dos blocs JSON) en
+- [X] T023 [US3] Connectar el tipus `Jwt` al desplegament (dos blocs JSON) en
       `src/ui/log_view.rs` (depèn de T018, T021)
 
 **Checkpoint**: totes les user stories (P1 i P2) funcionals
@@ -143,10 +143,10 @@ comprovar que capçalera i payload es mostren amb els valors correctes.
 
 ## Phase 6: Polish & Cross-Cutting Concerns
 
-- [ ] T024 [P] Executar `cargo clippy --all-targets` i corregir els avisos
-- [ ] T025 Executar els escenaris G–J de `quickstart.md` d'extrem a extrem amb el binari
+- [X] T024 [P] Executar `cargo clippy --all-targets` i corregir els avisos
+- [X] T025 Executar els escenaris G–J de `quickstart.md` d'extrem a extrem amb el binari
       real (com a la Fase 1: sota Xvfb + `xdotool`, no només llegits)
-- [ ] T026 Tornar a comprovar que el binari en mode `release` es manté dins el rang de
+- [X] T026 Tornar a comprovar que el binari en mode `release` es manté dins el rang de
       5–15 MB (constitució) després d'afegir `serde_json`, `quick-xml` i `base64`
 
 ---

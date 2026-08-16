@@ -93,8 +93,13 @@ de `ViewportCache`, que canvia en desplaçar-se):
    desplegat explícitament; el format complet (car per a payloads grans, SC-002) es calcula
    un sol cop per línia, no cada frame.
 
-Tots dos mapes s'acoten a una mida màxima (com `ViewportCache`, decisió 6 de la Fase 1):
-en superar-la, es descarta l'entrada més antiga.
+Tots dos mapes s'acoten a una mida màxima. A diferència de `ViewportCache` (Fase 1), que
+manté l'ordre i pot descartar només la línia més antiga, aquí en superar la mida es buiden
+sencers: mantenir un ordre d'inserció fiable en un `HashMap` exigiria una estructura
+addicional (una cua paral·lela) que es complica de seguida quan una mateixa línia es
+desplega i es torna a condensar diverses vegades. Buidar-ho tot de tant en tant és més
+senzill, igual de vàlid per acotar la memòria (principi III), i el cost és només tornar a
+calcular alguna detecció o format quan calgui — barat en tots dos casos.
 
 **Rationale**: sense memorització, un JSON gran es tornaria a parsejar i indentar a cada
 frame (fins a 60 vegades per segon) només per estar visible, violant SC-003. Acotar els
