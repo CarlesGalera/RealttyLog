@@ -178,16 +178,16 @@ reprèn.
 
 ### Tests for User Story 4 ⚠️
 
-- [ ] T033 [P] [US4] Test unitari de la lògica de transició d'estat directe/pausat (FR-017,
+- [X] T033 [P] [US4] Test unitari de la lògica de transició d'estat directe/pausat (FR-017,
       FR-018), en `tests/tailer_integration.rs`
 
 ### Implementation for User Story 4
 
-- [ ] T034 [US4] Implementar les transicions Live↔Paused en desplaçar la vista (FR-017,
+- [X] T034 [US4] Implementar les transicions Live↔Paused en desplaçar la vista (FR-017,
       FR-018) en `src/ui/log_view.rs` (depèn de T022)
-- [ ] T035 [US4] Implementar l'indicador visible "en directe"/"pausat" i l'acció "tornar al
+- [X] T035 [US4] Implementar l'indicador visible "en directe"/"pausat" i l'acció "tornar al
       directe" (FR-019) en `src/ui/log_view.rs` (depèn de T034)
-- [ ] T036 [US4] Implementar l'indicador de línies noves arribades mentre està pausat
+- [X] T036 [US4] Implementar l'indicador de línies noves arribades mentre està pausat
       (acceptance scenario 3) en `src/ui/log_view.rs` (depèn de T034)
 
 **Checkpoint**: totes les user stories P1 funcionals, per separat i juntes

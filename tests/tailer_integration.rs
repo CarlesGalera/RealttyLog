@@ -145,3 +145,44 @@ fn rotation_is_detected_and_following_continues() {
 
     fs::remove_file(&path).unwrap();
 }
+
+/// T033: pausar deixa de llegir contingut nou (FR-017) sense perdre'l
+/// (FR-025), i reprendre salta a la cua actual (FR-018).
+#[test]
+fn pause_stops_reading_and_resume_catches_up_to_the_tail() {
+    let path = tempfile_path("tailer-pause.log");
+    fs::write(&path, "línia inicial\n").unwrap();
+
+    let mut file = FollowedFile::open(path.clone(), OpenAt::End).unwrap();
+    assert_eq!(file.state, FollowState::Live);
+
+    file.pause();
+    assert_eq!(file.state, FollowState::Paused);
+    assert!(!file.has_new_content_while_paused);
+
+    let mut f = fs::OpenOptions::new().append(true).open(&path).unwrap();
+    writeln!(f, "arribada mentre estava pausat").unwrap();
+    drop(f);
+
+    wait_until(&mut file, |f| f.has_new_content_while_paused);
+    assert!(
+        !file
+            .viewport
+            .lines
+            .iter()
+            .any(|l| l.content == "arribada mentre estava pausat"),
+        "pausat no hauria de carregar contingut nou a la finestra"
+    );
+
+    file.resume_live().unwrap();
+    assert_eq!(file.state, FollowState::Live);
+    assert!(
+        file.viewport
+            .lines
+            .iter()
+            .any(|l| l.content == "arribada mentre estava pausat"),
+        "en reprendre, la línia arribada mentre estava pausat ha de ser visible"
+    );
+
+    fs::remove_file(&path).unwrap();
+}
