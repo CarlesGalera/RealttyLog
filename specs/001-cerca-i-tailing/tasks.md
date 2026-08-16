@@ -46,13 +46,13 @@ repositori.
 
 **⚠️ CRITICAL**: cap user story pot començar fins que aquesta fase estigui completa
 
-- [ ] T004 Arrencar la finestra `eframe` i l'estat base de l'aplicació en `src/main.rs` i
+- [X] T004 Arrencar la finestra `eframe` i l'estat base de l'aplicació en `src/main.rs` i
       `src/app.rs`
-- [ ] T005 Definir l'estat de vista de l'aplicació (vista de directori/cerca vs. vista de
+- [X] T005 Definir l'estat de vista de l'aplicació (vista de directori/cerca vs. vista de
       fitxer) en `src/app.rs`, perquè les user stories següents hi puguin commutar
-- [ ] T006 [P] Implementar la decodificació UTF-8 amb pèrdua compartida per cerca i
+- [X] T006 [P] Implementar la decodificació UTF-8 amb pèrdua compartida per cerca i
       seguiment (research.md, decisió 9) en `src/encoding.rs`
-- [ ] T007 [P] Crear els esquelets de mòdul `src/search/mod.rs` i `src/tailer/mod.rs`
+- [X] T007 [P] Crear els esquelets de mòdul `src/search/mod.rs` i `src/tailer/mod.rs`
       segons l'estructura de `plan.md`
 
 **Checkpoint**: fonaments llestos — ja es pot començar qualsevol user story
