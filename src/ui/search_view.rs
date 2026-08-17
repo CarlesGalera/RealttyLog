@@ -65,6 +65,11 @@ impl SearchViewState {
         ui.horizontal(|ui| {
             ui.label("Obrir un fitxer directament:");
             ui.text_edit_singleline(&mut self.direct_file_input);
+            if ui.button("Tria...").clicked() {
+                if let Some(path) = rfd::FileDialog::new().pick_file() {
+                    self.direct_file_input = path.display().to_string();
+                }
+            }
             let open_direct = ui.button("Segueix-lo").clicked();
             if open_direct && !self.direct_file_input.trim().is_empty() {
                 return Some(SearchViewAction::OpenDirect(PathBuf::from(
@@ -82,6 +87,11 @@ impl SearchViewState {
         ui.horizontal(|ui| {
             ui.label("Directori:");
             ui.text_edit_singleline(&mut self.directory_path_input);
+            if ui.button("Tria...").clicked() {
+                if let Some(path) = rfd::FileDialog::new().pick_folder() {
+                    self.directory_path_input = path.display().to_string();
+                }
+            }
             if ui.button("Obre").clicked() {
                 self.open_directory();
             }

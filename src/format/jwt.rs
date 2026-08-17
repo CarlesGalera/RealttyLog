@@ -1,10 +1,26 @@
-use std::sync::OnceLock;
+use std::sync::{LazyLock, OnceLock};
 
-use base64::engine::general_purpose::URL_SAFE_NO_PAD;
-use base64::Engine;
+use base64::engine::general_purpose::{GeneralPurposeConfig, URL_SAFE_NO_PAD};
+use base64::engine::{DecodePaddingMode, GeneralPurpose};
+use base64::{alphabet, Engine};
 use regex::Regex;
 
 use super::styled::StyledLine;
+
+/// Motor de descodificació tolerant amb els bits sobrants de l'últim
+/// símbol: prou estricte per validar la forma d'un JWT, però sense
+/// rebutjar una capçalera real només perquè el codi que l'ha generat no ha
+/// netejat aquests bits (com fan la majoria de decodificadors del món real,
+/// a diferència del mode canònic per defecte del crate).
+static LENIENT_URL_SAFE_NO_PAD: LazyLock<GeneralPurpose> = LazyLock::new(|| {
+    GeneralPurpose::new(
+        &alphabet::URL_SAFE,
+        GeneralPurposeConfig::new()
+            .with_encode_padding(false)
+            .with_decode_padding_mode(DecodePaddingMode::Indifferent)
+            .with_decode_allow_trailing_bits(true),
+    )
+});
 
 fn jwt_pattern() -> &'static Regex {
     static RE: OnceLock<Regex> = OnceLock::new();
@@ -17,10 +33,26 @@ fn jwt_pattern() -> &'static Regex {
 }
 
 /// Cerca la forma d'un JWT (tres segments base64url separats per punts)
-/// dins `line` (FR-011). No el descodifica encara: això només passa quan
-/// l'usuari desplega la línia (User Story 3).
+/// dins `line` (FR-011). No es descodifica sencer encara (això només passa
+/// quan l'usuari desplega la línia, User Story 3), però es verifica que la
+/// capçalera descodifiqui a bytes que comencin per `{`: qualsevol JWT real
+/// comença amb un objecte JSON, i aquest únic byte n'hi ha prou per
+/// descartar identificadors amb punts (`ALDAIA.MATERIAL_MANAGER.START_ORDER`)
+/// que casualment tenen la mateixa forma però mai la mateixa capçalera.
 pub fn detect_shape(line: &str) -> Option<(usize, usize)> {
-    jwt_pattern().find(line).map(|m| (m.start(), m.end()))
+    jwt_pattern()
+        .find_iter(line)
+        .find(|m| header_looks_like_json(&line[m.start()..m.end()]))
+        .map(|m| (m.start(), m.end()))
+}
+
+fn header_looks_like_json(candidate: &str) -> bool {
+    let Some(header) = candidate.split('.').next() else {
+        return false;
+    };
+    LENIENT_URL_SAFE_NO_PAD
+        .decode(header)
+        .is_ok_and(|bytes| bytes.first() == Some(&b'{'))
 }
 
 /// El resultat de descodificar un segment d'un JWT com a JSON.

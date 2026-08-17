@@ -79,7 +79,7 @@ impl LogViewState {
         self.ensure_detection_cached();
         self.ensure_rule_match_cached(rules);
 
-        egui::ScrollArea::vertical()
+        egui::ScrollArea::both()
             .auto_shrink([false, false])
             .show(ui, |ui| {
                 let offsets: Vec<u64> = self
@@ -158,11 +158,6 @@ impl LogViewState {
             .map(to_color32);
 
         ui.horizontal(|ui| {
-            if let Some(kind) = kind {
-                if ui.small_button(badge(kind)).clicked() {
-                    self.toggle_expand(offset, kind);
-                }
-            }
             if let Some(line) = self
                 .file
                 .viewport
@@ -177,6 +172,11 @@ impl LogViewState {
                     None => {
                         ui.label(&line.content);
                     }
+                }
+            }
+            if let Some(kind) = kind {
+                if ui.small_button(badge(kind)).clicked() {
+                    self.toggle_expand(offset, kind);
                 }
             }
         });

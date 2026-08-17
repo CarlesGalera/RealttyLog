@@ -12,6 +12,17 @@ pub fn detect(line: &str) -> Option<(usize, usize)> {
         if ch != '{' && ch != '[' {
             continue;
         }
+        // Un `{`/`[` enganxat a un identificador (p. ex. el `[]` final de
+        // la notació de tipus `System.String[]`) no és mai l'inici d'un
+        // JSON real dins un log: sempre hi ha un separador (espai, `:`,
+        // `=`...) abans, o és l'inici de línia.
+        let prev_is_identifier = line[..idx]
+            .chars()
+            .next_back()
+            .is_some_and(|c| c.is_alphanumeric() || c == '_');
+        if prev_is_identifier {
+            continue;
+        }
         let sub = &line[idx..];
         let mut stream = serde_json::Deserializer::from_str(sub).into_iter::<Value>();
         if let Some(Ok(_)) = stream.next() {
